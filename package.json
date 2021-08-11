@@ -1,0 +1,19 @@
+{
+  "name": "designeradvantage-harvest-sync",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cloudanswers/designeradvantage-harvest-sync.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cloudanswers/designeradvantage-harvest-sync/issues"
+  },
+  "homepage": "https://github.com/cloudanswers/designeradvantage-harvest-sync#readme"
+}
