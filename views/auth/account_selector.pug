@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+  main.flex-shrink-0
+    .container
+      h1.mt-5 Accounts
+      div
+        each account in accounts
+          .d-flex.mb-3
+            a(href=`/${account.id}`) #{account.name}
+        else
+          h4 No accounts to sync
