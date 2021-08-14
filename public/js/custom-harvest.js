@@ -17,7 +17,7 @@ function docReady(fn) {
       var newTag = `<div class="d-flex justify-space-between align-items-center">
         <h2>${headerTag.textContent}</h2>
         <form method="post" action="/user/` + params[1] + `">
-          <button type="submit">Sync</button>
+          <button type="submit">Start sync</button>
         </from>
       </div>`
       headerTag.outerHTML = newTag;
