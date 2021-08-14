@@ -11,9 +11,9 @@ const options = {
 
 const timeQueue = new Queue('time', options);
 timeQueue.process(3, (job, done) => {
-  const { tempFilePath, name } = job.data;
+  const { tempFilePath, name, dir } = job.data;
   try {
-    saveFileToS3({ tempFilePath, name })
+    saveFileToS3({ tempFilePath, name }, dir)
       .then(() => {
         console.log('upload success:  ', `${tempFilePath}/${name}`);
         done();
@@ -22,8 +22,9 @@ timeQueue.process(3, (job, done) => {
         console.log(`upload failed:  ${tempFilePath}/${name} - reason: `, e.message);
       });
     // done();
-  } catch(e) {
-    console.log('------Upload error: ', e.message);
+  } catch(error) {
+    console.log('------Upload error: ', error.message);
+    throw error;
   }
 });
 

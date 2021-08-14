@@ -19,22 +19,23 @@ exports.syncUserInfo = (req, res) => {
   const { accountId } = req.params;
   const today = new Date();
   const month = today.getMonth()+1;
-  const date = today.getDate()+1;
+  const date = today.getDate();
   const to = `${today.getFullYear()}${('00'+month).slice(-2)}${('00'+date).slice(-2)}`;
 
   req.fetch.get(`/v2/reports/time/clients?from=20210101&to=${to}`)
     .then(data => {
-      console.log('time data: ', data);
+      console.log('time data: ', data.data.results);
 
       writeFile(
         `${basePath}/tmp/${accountId}`,
         `${to}.json`,
-        JSON.stringify(data.data)
+        JSON.stringify(data.data.results)
       );
 
       syncTime({
         tempFilePath: `/tmp/${accountId}`,
-        name: `${to}.json`
+        name: `${to}.json`,
+        dir: `${process.env.AWS_S3_DIR}/${accountId}`
       })
         .then(() => res.redirect(`/${accountId}`))
         .catch(error => {
@@ -43,7 +44,7 @@ exports.syncUserInfo = (req, res) => {
         });
     })
     .catch(error => {
-      console.log("~~~catche~~~:", error.request.data);
+      console.log("~~~catche~~~:", error.message);
       res.render('error', { errorMsg: error.message });
     });
 }
