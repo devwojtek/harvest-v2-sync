@@ -1,14 +1,16 @@
-const queues = require("../queues/index");
+const queues = require("../queues/index")
+  , Bee = require("bee-queue");
 
 module.exports = {
+  Bee,
   queues: Object.keys(queues).map(key => {
     return {
-      // Name of the bull queue, this name must match up exactly with what you've defined in bull.
-      name: queues[key].name,
-      // interface RedisUrlConnectionOptions { url: string;}
+      name: queues[key].name, // Name of the queue
       url: process.env.REDIS_URL,
-      // Hostname or queue prefix, you can put whatever you want.
-      hostId: "my_svc"
+      hostId: queues[key].hostId,
+      type: 'bee'
     };
-  })
+  }),
+  customJsPath: '/js/custom-harvest.js',
+  customCssPath: '/js/style.css'
 };

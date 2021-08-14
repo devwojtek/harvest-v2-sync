@@ -65,8 +65,8 @@ if (app.get('env') == 'development') {
 	app.locals.pretty = true;
 }
 
-// app.use("/jobs", require("./jobs/routes"));
 app.use(routes);
+app.use("/", require("./jobs/routes"));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

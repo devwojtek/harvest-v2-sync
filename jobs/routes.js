@@ -5,13 +5,15 @@ const express = require("express")
 const GUIConfig = require("./gui/arena");
 const router = express.Router();
 
+const arenaConfig = Arena(GUIConfig, {
+  basePath: "/",
+  disableListen: true,
+});
+
 router.use(
-  "/",
-  AuthMiddleware(),
-  Arena(GUIConfig, {
-    disableListen: true,
-    basePath: "/jobs/myjob"
-  })
+  "/:userId",
+  // AuthMiddleware(),
+  arenaConfig
 );
 
 module.exports = router;
