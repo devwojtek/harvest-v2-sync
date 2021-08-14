@@ -7,7 +7,7 @@ require('dotenv').config();
 const service = axios.create({
   baseURL: "https://api.harvestapp.com",
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 15000 // request timeout
 })
 
 const success = (resolve, response) => resolve(response.data.data);

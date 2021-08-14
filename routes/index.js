@@ -9,6 +9,5 @@ router.use('/auth-error', function (req, res) {
 
 router.use('/auth', require('./auth.routes'));
 router.use('/', require('./user.routes'));
-// router.use('/', AuthMiddleware(), require('./user.routes'));
 
 module.exports = router;
