@@ -11,19 +11,7 @@ exports.login = (req, res) => {
 
 // Authenticate to harvest
 exports.showAccounts = (req, res) => {
-  // const accounts = req.session.accounts;
-  const accounts = [
-    {
-      "id": 10254,
-      "name": "Sterling Cooper Advertising Agency",
-      "product": "harvest"
-    },
-    {
-      "id": 88888,
-      "name": "Iridesco",
-      "product": "forecast"
-    }
-  ];
+  const accounts = req.session.accounts;
 
   res.render('auth/account_selector', { accounts });
 }

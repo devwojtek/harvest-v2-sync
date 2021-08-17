@@ -1,4 +1,7 @@
-const { saveFileToS3 } = require('../services/s3');
+const { syncTime } = require('../jobs/queues/process')
+  , fs = require('fs')
+  , { basePath } = require('../config/constants')
+  , { writeFile } = require('../helpers/files');
 
 // Show dashboard
 exports.index = (req, res) => {
@@ -8,30 +11,42 @@ exports.index = (req, res) => {
 // Show user detail
 exports.getUserById = async (req, res) => {
   const { accountId } = req.params;
-  res.render('user/detail', { user: { id: accountId, name: 'Test User'}})
-
-  // req.fetch.get(`/v2/users/${userId}`)
-  //   .then(data => {
-  //     res.render('user/detail', { user: data.data });
-  //   })
-  //   .catch(err => {
-  //     console.log(err.config);
-  //     res.render('error', { errorMsg: err.message });
-  //   })
+  const user = req.session && req.session.user ? req.session.user : { id: accountId };
+  res.render('user/detail', { user });
 }
 
-exports.syncUserInfo = async (req, res) => {
+exports.syncUserInfo = (req, res) => {
   const { accountId } = req.params;
-  try {
-    const data = await saveFileToS3({
-      tempFilePath: '/tmp',
-      name: 'auth.json'
+  const today = new Date();
+  const month = today.getMonth()+1;
+  const date = today.getDate();
+  const to = `${today.getFullYear()}${('00'+month).slice(-2)}${('00'+date).slice(-2)}`;
+
+  req.fetch.get(`/v2/reports/time/clients?from=20210101&to=${to}`)
+    .then(data => {
+      console.log('time data: ', data.data.results);
+
+      writeFile(
+        `${basePath}/tmp/${accountId}`,
+        `${to}.json`,
+        JSON.stringify(data.data.results)
+      );
+
+      syncTime({
+        tempFilePath: `/tmp/${accountId}`,
+        name: `${to}.json`,
+        dir: `${process.env.AWS_S3_DIR}/${accountId}`
+      })
+        .then(() => res.redirect(`/${accountId}`))
+        .catch(error => {
+          console.log("~~~~~~:", error.message);
+          res.render('error', { errorMsg: error.message });
+        });
     })
-    console.log("res: ", data);
-  } catch(e) {
-    console.log("------Upload error: ", e.message);
-  }
-  res.redirect(`/${accountId}/jobs`);
+    .catch(error => {
+      console.log("~~~catche~~~:", error.message);
+      res.render('error', { errorMsg: error.message });
+    });
 }
 
 // Show jobs
